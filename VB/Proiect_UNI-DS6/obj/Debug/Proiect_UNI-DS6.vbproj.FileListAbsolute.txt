@@ -1,0 +1,36 @@
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.exe.config
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.exe
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.pdb
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.xml
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.vbproj.AssemblyReference.cache
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.Main.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.Resources.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.vbproj.GenerateResource.cache
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.vbproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.exe
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.xml
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.pdb
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LED_asamblare.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LED_mikroC.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.Despre_program.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LCD_grafic.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LCD_text.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\visual basic\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.afis7segmente.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.exe.config
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.exe
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.pdb
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\bin\Debug\Proiect_UNI-DS6.xml
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.vbproj.AssemblyReference.cache
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.afis7segmente.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.Despre_program.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LCD_grafic.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LCD_text.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LED_asamblare.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.LED_mikroC.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.Main.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI_DS6.Resources.resources
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.vbproj.GenerateResource.cache
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.vbproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.exe
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.xml
+C:\Users\User\Desktop\IMED\MPMC\proiect\VB\Proiect_UNI-DS6\obj\Debug\Proiect_UNI-DS6.pdb
