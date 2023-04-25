@@ -1,0 +1,797 @@
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 1
+
+
+
+
+
+        8051 Macro Assembler   C 5 1 A S M   V 1.2
+        ==========================================
+
+
+
+        Source File:     serial.a51
+        Object File(s):  serial.hex
+        List File:       serial.lst
+
+
+
+ Line    I  Addr Code           Source
+
+    1:           N      0000    	 ORG  0000H
+    2:      0000 02 01 00       	 JMP  MAIN
+    3:                          		
+    4:           N      0023    	 ORG  0023H			; vector de intrerupere c
+    5:      0023 02 01 6D       	 JMP  SERIAL 			;   SERIALA 
+    6:                          
+    7:           D        30    COMANDA  DATA	30H			;comanda memoreaza c
+    8:           D        31    VITEZA	 DATA   31H			; VITEZA - variabil
+    9:           B        00    OPRIRE	 BIT	0			; OPRIRE=1 - efectele su
+   10:                          					; OPRIRE=0 - efectele ruleaza	 
+   11:           N      0100    	 ORG   100H
+   12:      0100 75 81 60       MAIN:	 MOV   SP,#60H      
+   13:      0103 75 A8 90       	 MOV   IE,# 90H 		; validare intreruper
+   14:      0106 12 01 57       	 CALL  PROGSER 			; programare comunica
+   15:                          	
+   16:      0109 75 30 00       	 MOV   COMANDA,#00H
+   17:      010C 75 31 80       	 MOV   VITEZA,#80H
+   18:      010F C2 00          	 CLR   OPRIRE	
+   19:                          
+   20:      0111 75 80 00       	 MOV   P0,#00H			; stingere LED-uri por
+   21:      0114 75 90 00       	 MOV   P1,#00H			; stingere LED-uri por
+   22:      0117 75 A0 00       	 MOV   P2,#00H			; stingere LED-uri por
+   23:      011A 75 B0 03       	 MOV   P3,#03H			; stingere LED-uri por
+   24:                          					;  exceptia P3.0 si P3.1 care 
+   25:                          					;    trebuie mentinute pe 1 logic 
+   26:                          					;    pentru a evita blocarea
+   27:                          					;    comunicatiei seriale 
+   28:                          
+   29:      011D 20 00 35         LOOP:	    JB	 OPRIRE,SF1
+   30:      0120 E5 30          	    MOV	 A,COMANDA
+   31:      0122 B4 31 06       	    CJNE A,#'1',CONTIX1 	; comparare cu
+   32:      0125 12 01 DE            EFE1:  CALL EFECT1			; pornire efec
+   33:      0128 02 01 55       	    JMP  SF1
+   34:                          
+   35:      012B B4 32 06          CONTIX1:  CJNE A,#'2',CONTIX2 	; comp
+   36:      012E 12 02 51            EFE2:   CALL EFECT2		; pornire efec
+   37:      0131 02 01 55       	     JMP  SF1
+   38:                          
+   39:      0134 B4 33 06          CONTIX2:  CJNE A,#'3',CONTIX3  	; com
+   40:      0137 12 03 36            EFE3:   CALL EFECT3		; pornire efec
+   41:      013A 02 01 55       	     JMP  SF1
+   42:                          
+   43:      013D B4 34 06          CONTIX3:  CJNE A,#'4',CONTIX4		; comp
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 2
+
+
+
+ Line    I  Addr Code           Source
+
+   44:      0140 12 04 33            EFE4:   CALL EFECT4		; pornire efec
+   45:      0143 02 01 55       	     JMP  SF1
+   46:                          
+   47:      0146 B4 41 06          CONTIX4:  CJNE A,#'A',CONTIX5  	; com
+   48:      0149 12 05 1E            APR1:   CALL APRINDE		; aprinderea 
+   49:      014C 02 01 55       	     JMP  SF1
+   50:                          
+   51:      014F B4 53 03          CONTIX5:  CJNE A,#'S',SF1		; comparar
+   52:      0152 12 05 2E            STG1:   CALL STINGE		; stingerea LE
+   53:                          
+   54:      0155 80 C6             SF1:	     JMP  LOOP			; intreruperilo
+   55:                          
+   56:      0157 75 89 20       PROGSER: MOV   TMOD,#20H  		; subrutina 
+   57:      015A 75 8D F5             	 MOV   TH1,#245   		; baud rate =
+   58:      015D 75 8C F5       	 MOV   TH0,#245
+   59:      0160 75 87 80       	 MOV   PCON,#128                       
+   60:      0163 75 98 50             	 MOV   SCON,#50H
+   61:      0166 D2 8E                   SETB  TR1
+   62:      0168 C2 99               	 CLR   TI      			; Clear transmit
+   63:      016A C2 98               	 CLR   RI      			; Clear receive 
+   64:      016C 22              	 RET
+   65:                          
+   66:                          
+   67:                          ; Subrutina de comunicatie seriala
+   68:      016D C0 E0          SERIAL:     PUSH ACC
+   69:      016F 20 99 65       	    JB 	TI,SF	 		; TI=1 inseamna Transm
+   70:      0172 E5 99            RECEPTIE: MOV A,SBUF    		; citire car
+   71:      0174 F5 99          	    MOV	SBUF,A    		; trimitere ecou
+   72:                          
+   73:                          
+   74:      0176 B4 31 05       	    CJNE A,#'1',CONTI1 		; comparare cu
+   75:      0179 F5 30               EF1:   MOV COMANDA,A	
+   76:      017B 02 01 D7       	    JMP  SF
+   77:                          
+   78:      017E B4 32 05          CONTI1:  CJNE A,#'2',CONTI2 		; compa
+   79:      0181 F5 30               EF2:   MOV COMANDA,A	
+   80:      0183 02 01 D7       	    JMP  SF
+   81:                          
+   82:      0186 B4 33 05          CONTI2:  CJNE A,#'3',CONTI3  	; compa
+   83:      0189 F5 30               EF3:   MOV COMANDA,A	
+   84:      018B 02 01 D7       	    JMP  SF
+   85:                          
+   86:      018E B4 34 05          CONTI3:  CJNE A,#'4',CONTI4		; compar
+   87:      0191 F5 30               EF4:   MOV COMANDA,A
+   88:      0193 02 01 D7       	    JMP SF		
+   89:                          
+   90:      0196 B4 41 05          CONTI4:  CJNE A,#'A',CONTI5		; compar
+   91:      0199 F5 30               APRI:  MOV COMANDA,A
+   92:      019B 02 01 D7       	    JMP  SF	
+   93:                            	
+   94:      019E B4 53 05          CONTI5:  CJNE A,#'S',CONTI6		; compar
+   95:      01A1 F5 30               STIN:  MOV COMANDA,A
+   96:      01A3 02 01 D7       	    JMP	 SF
+   97:                          
+   98:      01A6 B4 50 05          CONTI6:  CJNE A,#'P',CONTI7		; compar
+   99:      01A9 C2 00              PORNIRE: CLR OPRIRE
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 3
+
+
+
+ Line    I  Addr Code           Source
+
+  100:      01AB 02 01 D7       	    JMP  SF	
+  101:                            	
+  102:      01AE B4 4F 05          CONTI7:  CJNE A,#'O',CONTI8		; compar
+  103:      01B1 D2 00              OPR:    SETB OPRIRE
+  104:      01B3 02 01 D7       	    JMP SF		
+  105:                          
+  106:      01B6 B4 46 0F          CONTI8:  CJNE A,#'F',CONTI9		; compar
+  107:      01B9 E5 31              FAST:   MOV A,VITEZA
+  108:      01BB B4 10 03       	    CJNE A,#10H,SCAD
+  109:      01BE 02 01 D7       	    JMP SF
+  110:      01C1 94 10              SCAD:   SUBB A,#10H
+  111:      01C3 F5 31          	    MOV VITEZA,A
+  112:      01C5 02 01 D7       	    JMP SF
+  113:                          
+  114:      01C8 B4 57 0C          CONTI9:  CJNE A,#'W',SF		; comparare 
+  115:      01CB E5 31              SLOW:   MOV A,VITEZA
+  116:      01CD B4 F0 03       	    CJNE A,#0F0H,ADUN
+  117:      01D0 02 01 D7       	    JMP SF
+  118:      01D3 24 10              ADUN:   ADD A,#10H
+  119:      01D5 F5 31          	    MOV VITEZA,A
+  120:                          
+  121:      01D7 C2 98          SF:	    CLR  RI
+  122:      01D9 C2 99          	    CLR  TI
+  123:      01DB D0 E0          	    POP	 ACC
+  124:      01DD 32             	    RETI
+  125:                          
+  126:                          EFECT1:	
+  127:      01DE 75 80 08       	MOV P0,#08H
+  128:      01E1 75 90 18       	MOV P1,#18H
+  129:      01E4 75 A0 88       	MOV P2,#88H
+  130:      01E7 75 B0 F7       	MOV P3,#0F7H
+  131:      01EA 12 05 3E       	CALL TEMP
+  132:                          	
+  133:      01ED 75 A0 8A       	MOV P2,#8AH
+  134:      01F0 75 B0 F3       	MOV P3,#0F3H
+  135:      01F3 12 05 3E       	CALL TEMP
+  136:                          
+  137:      01F6 75 90 1A       	MOV P1,#1AH
+  138:      01F9 75 A0 88       	MOV P2,#88H
+  139:      01FC 75 B0 F3       	MOV P3,#0F3H
+  140:      01FF 12 05 3E       	CALL TEMP
+  141:                          
+  142:      0202 75 80 09       	MOV P0,#09H
+  143:      0205 75 90 18       	MOV P1,#18H
+  144:      0208 12 05 3E       	CALL TEMP
+  145:                          
+  146:      020B 75 80 48       	MOV P0,#48H
+  147:      020E 12 05 3E       	CALL TEMP
+  148:                          
+  149:      0211 75 80 08       	MOV P0,#08H
+  150:      0214 75 90 58       	MOV P1,#58H
+  151:      0217 12 05 3E       	CALL TEMP
+  152:                          
+  153:      021A 75 80 28       	MOV P0,#28H
+  154:      021D 75 90 18       	MOV P1,#18H
+  155:      0220 12 05 3E       	CALL TEMP
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 4
+
+
+
+ Line    I  Addr Code           Source
+
+  156:                          
+  157:      0223 75 80 18       	MOV P0,#18H
+  158:      0226 12 05 3E       	CALL TEMP
+  159:                          
+  160:      0229 C2 94          	CLR P1.4
+  161:      022B 12 05 3E       	CALL TEMP
+  162:                          
+  163:      022E D2 94          	SETB P1.4
+  164:      0230 12 05 3E       	CALL TEMP
+  165:                          
+  166:      0233 C2 94          	CLR P1.4
+  167:      0235 12 05 3E       	CALL TEMP
+  168:                          
+  169:      0238 75 80 18       	MOV P0,#18H
+  170:      023B 12 05 3E       	CALL TEMP
+  171:                          
+  172:      023E 75 80 28       	MOV P0,#28H
+  173:      0241 12 05 3E       	CALL TEMP
+  174:                          
+  175:      0244 75 80 48       	MOV P0,#48H
+  176:      0247 12 05 3E       	CALL TEMP
+  177:                          
+  178:      024A 75 80 88       	MOV P0,#88H
+  179:      024D 12 05 3E       	CALL TEMP
+  180:      0250 22             	RET
+  181:                          
+  182:                          EFECT2:			
+  183:      0251 75 80 FF       	MOV P0,#0FFH
+  184:      0254 75 90 FF       	MOV P1,#0FFH
+  185:      0257 75 A0 FF       	MOV P2,#0FFH
+  186:      025A 75 B0 FF       	MOV P3,#0FFH
+  187:      025D 12 05 3E       	CALL TEMP
+  188:                          	
+  189:      0260 75 A0 F7       	MOV P2,#0F7H
+  190:      0263 12 05 3E       	CALL TEMP
+  191:                          
+  192:      0266 75 90 F3       	MOV P1,#0F3H
+  193:      0269 75 A0 FB       	MOV P2,#0FBH
+  194:      026C 12 05 3E       	CALL TEMP
+  195:                          
+  196:      026F 75 80 E1       	MOV P0,#0E1H
+  197:      0272 75 90 E3       	MOV P1,#0E3H
+  198:      0275 12 05 3E       	CALL TEMP
+  199:                          
+  200:      0278 75 80 C1       	MOV P0,#0C1H
+  201:      027B 75 90 83       	MOV P1,#83H
+  202:      027E 12 05 3E       	CALL TEMP
+  203:                          
+  204:      0281 C2 A3          	CLR P2.3
+  205:      0283 12 05 3E       	CALL TEMP
+  206:                          
+  207:      0286 D2 A3          	SETB P2.3
+  208:      0288 12 05 3E       	CALL TEMP
+  209:                          
+  210:      028B C2 A3          	CLR P2.3
+  211:      028D 12 05 3E       	CALL TEMP
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 5
+
+
+
+ Line    I  Addr Code           Source
+
+  212:                          
+  213:      0290 75 80 FF       	MOV P0,#0FFH
+  214:      0293 75 90 FF       	MOV P1,#0FFH
+  215:      0296 75 A0 FF       	MOV P2,#0FFH
+  216:      0299 75 B0 FF       	MOV P3,#0FFH 
+  217:      029C 12 05 3E       	CALL TEMP
+  218:                          
+  219:      029F 75 80 00       	MOV P0,#00H
+  220:      02A2 75 90 00       	MOV P1,#00H
+  221:      02A5 75 A0 00       	MOV P2,#00H
+  222:      02A8 75 B0 03       	MOV P3,#03H
+  223:      02AB 12 05 3E       	CALL TEMP
+  224:                          
+  225:      02AE 75 80 7E       	MOV P0,#7EH
+  226:      02B1 75 90 42       	MOV P1,#42H
+  227:      02B4 75 A0 52       	MOV P2,#52H
+  228:      02B7 75 B0 77       	MOV P3,#77H
+  229:      02BA 12 05 3E       	CALL TEMP
+  230:                          
+  231:      02BD 75 90 12       	MOV P1,#12H
+  232:      02C0 75 A0 12       	MOV P2,#12H
+  233:      02C3 75 B0 7F       	MOV P3,#7FH
+  234:      02C6 12 05 3E       	CALL TEMP
+  235:                          
+  236:      02C9 75 90 04       	MOV P1,#04H
+  237:      02CC 75 A0 04       	MOV P2,#04H
+  238:      02CF 12 05 3E       	CALL TEMP
+  239:                          
+  240:      02D2 75 90 4A       	MOV P1,#4AH
+  241:      02D5 75 A0 4A       	MOV P2,#4AH
+  242:      02D8 75 B0 43       	MOV P3,#43H
+  243:      02DB 12 05 3E       	CALL TEMP
+  244:                          	
+  245:      02DE 75 90 42       	MOV P1,#42H
+  246:      02E1 75 A0 42       	MOV P2,#42H
+  247:      02E4 75 B0 7F       	MOV P3,#7FH
+  248:      02E7 12 05 3E       	CALL TEMP
+  249:                          
+  250:      02EA 75 80 3E       	MOV P0,#3EH
+  251:      02ED 75 90 40       	MOV P1,#40H
+  252:      02F0 75 A0 40       	MOV P2,#40H
+  253:      02F3 75 B0 3F       	MOV P3,#3FH
+  254:      02F6 12 05 3E       	CALL TEMP
+  255:                          
+  256:      02F9 75 80 7E       	MOV P0,#7EH
+  257:      02FC 75 90 4A       	MOV P1,#4AH
+  258:      02FF 75 A0 4A       	MOV P2,#4AH
+  259:      0302 75 B0 43       	MOV P3,#43H
+  260:      0305 12 05 3E       	CALL TEMP
+  261:                          
+  262:      0308 75 80 7E       	MOV P0,#7EH
+  263:      030B 75 90 1A       	MOV P1,#1AH
+  264:      030E 75 A0 2A       	MOV P2,#2AH
+  265:      0311 75 B0 4F       	MOV P3,#4FH
+  266:      0314 12 05 3E       	CALL TEMP
+  267:                          
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 6
+
+
+
+ Line    I  Addr Code           Source
+
+  268:      0317 75 80 64       	MOV P0,#64H
+  269:      031A 75 90 10       	MOV P1,#10H
+  270:      031D 75 A0 10       	MOV P2,#10H
+  271:      0320 75 B0 67       	MOV P3,#67H
+  272:      0323 12 05 3E       	CALL TEMP
+  273:                          
+  274:                          
+  275:      0326 75 80 00       	MOV P0,#00H
+  276:      0329 75 90 00       	MOV P1,#00H
+  277:      032C 75 A0 00       	MOV P2,#00H
+  278:      032F 75 B0 03       	MOV P3,#03H
+  279:      0332 12 05 3E       	CALL TEMP
+  280:                          
+  281:      0335 22             	RET
+  282:                          
+  283:                          EFECT3:	
+  284:      0336 75 80 00       	MOV P0,#00H
+  285:      0339 75 90 E0       	MOV P1,#0E0H
+  286:      033C 75 A0 40       	MOV P2,#40H
+  287:      033F 75 B0 E3       	MOV P3,#0E3H
+  288:      0342 12 05 3E       	CALL TEMP
+  289:                          	
+  290:      0345 75 80 E0       	MOV P0,#0E0H
+  291:      0348 75 90 40       	MOV P1,#40H
+  292:      034B 75 A0 E0       	MOV P2,#0E0H
+  293:      034E 75 B0 03       	MOV P3,#03H
+  294:      0351 12 05 3E       	CALL TEMP
+  295:                          
+  296:      0354 75 80 00       	MOV P0,#00H
+  297:      0357 75 90 E1       	MOV P1,#0E1H
+  298:      035A 75 A0 41       	MOV P2,#41H
+  299:      035D 75 B0 E3       	MOV P3,#0E3H
+  300:      0360 12 05 3E       	CALL TEMP
+  301:                          
+  302:      0363 75 90 F3       	MOV P1,#0F3H
+  303:      0366 75 A0 43       	MOV P2,#43H
+  304:      0369 12 05 3E       	CALL TEMP
+  305:                          
+  306:      036C 75 90 EE       	MOV P1,#0EEH
+  307:      036F 75 A0 46       	MOV P2,#46H
+  308:      0372 12 05 3E       	CALL TEMP
+  309:                          
+  310:      0375 75 80 E1       	MOV P0,#0E1H
+  311:      0378 75 90 40       	MOV P1,#40H
+  312:      037B 75 A0 E0       	MOV P2,#0E0H
+  313:      037E 75 B0 03       	MOV P3,#03H
+  314:      0381 12 05 3E       	CALL TEMP
+  315:                          
+  316:      0384 75 80 F3       	MOV P0,#0F3H
+  317:      0387 75 90 41       	MOV P1,#41H
+  318:      038A 12 05 3E       	CALL TEMP
+  319:                          
+  320:      038D 75 80 EB       	MOV P0,#0EBH
+  321:      0390 75 90 43       	MOV P1,#43H
+  322:      0393 12 05 3E       	CALL TEMP
+  323:                          
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 7
+
+
+
+ Line    I  Addr Code           Source
+
+  324:      0396 75 80 EE       	MOV P0,#0EEH
+  325:      0399 75 90 46       	MOV P1,#46H
+  326:      039C 75 B0 03       	MOV P3,#03H 
+  327:      039F 12 05 3E       	CALL TEMP
+  328:                          
+  329:      03A2 75 80 00       	MOV P0,#00H
+  330:      03A5 75 90 E0       	MOV P1,#0E0H
+  331:      03A8 75 A0 41       	MOV P2,#41H
+  332:      03AB 75 B0 E3       	MOV P3,#0E3H
+  333:      03AE 12 05 3E       	CALL TEMP
+  334:                          
+  335:      03B1 75 A0 41       	MOV P2,#41H
+  336:      03B4 75 B0 F3       	MOV P3,#0F3H
+  337:      03B7 12 05 3E       	CALL TEMP
+  338:                          
+  339:      03BA 75 90 E1       	MOV P1,#0E1H
+  340:      03BD 75 A0 43       	MOV P2,#43H
+  341:      03C0 75 B0 EF       	MOV P3,#0EFH
+  342:      03C3 12 05 3E       	CALL TEMP
+  343:                          
+  344:      03C6 75 90 E0       	MOV P1,#0E0H
+  345:      03C9 75 A0 40       	MOV P2,#40H
+  346:      03CC 75 B0 E3       	MOV P3,#0E3H
+  347:      03CF 12 05 3E       	CALL TEMP
+  348:                          
+  349:      03D2 75 90 E0       	MOV P1,#0E0H
+  350:      03D5 75 A0 40       	MOV P2,#40H
+  351:      03D8 75 B0 E3       	MOV P3,#0E3H
+  352:      03DB 12 05 3E       	CALL TEMP
+  353:                          	
+  354:      03DE 75 90 70       	MOV P1,#70H
+  355:      03E1 75 A0 20       	MOV P2,#20H
+  356:      03E4 75 B0 73       	MOV P3,#73H
+  357:      03E7 12 05 3E       	CALL TEMP
+  358:                          
+  359:      03EA 75 90 38       	MOV P1,#38H
+  360:      03ED 75 A0 10       	MOV P2,#10H
+  361:      03F0 75 B0 3B       	MOV P3,#3BH
+  362:      03F3 12 05 3E       	CALL TEMP
+  363:                          
+  364:      03F6 75 90 1C       	MOV P1,#1CH
+  365:      03F9 75 A0 08       	MOV P2,#08H
+  366:      03FC 75 B0 1F       	MOV P3,#1FH
+  367:      03FF 12 05 3E       	CALL TEMP
+  368:                          
+  369:      0402 75 90 0E       	MOV P1,#0EH
+  370:      0405 75 A0 04       	MOV P2,#04H
+  371:      0408 75 B0 0F       	MOV P3,#0FH
+  372:      040B 12 05 3E       	CALL TEMP
+  373:                          
+  374:      040E 75 90 07       	MOV P1,#07H
+  375:      0411 75 A0 02       	MOV P2,#02H
+  376:      0414 75 B0 07       	MOV P3,#07H
+  377:      0417 12 05 3E       	CALL TEMP
+  378:                          
+  379:      041A 75 90 01       	MOV P1,#01H
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 8
+
+
+
+ Line    I  Addr Code           Source
+
+  380:      041D 75 A0 00       	MOV P2,#00H
+  381:      0420 75 B0 03       	MOV P3,#03H
+  382:      0423 12 05 3E       	CALL TEMP
+  383:                          
+  384:      0426 75 90 00       	MOV P1,#00H
+  385:      0429 75 A0 00       	MOV P2,#00H
+  386:      042C 75 B0 03       	MOV P3,#03H
+  387:      042F 12 05 3E       	CALL TEMP
+  388:                          
+  389:      0432 22             	RET
+  390:                          
+  391:                          EFECT4:	
+  392:      0433 75 80 EB       	MOV P0,#0EBH
+  393:      0436 75 90 D5       	MOV P1,#0D5H
+  394:      0439 75 A0 EB       	MOV P2,#0EBH
+  395:      043C 75 B0 D7       	MOV P3,#0D7H
+  396:      043F 12 05 3E       	CALL TEMP
+  397:                          	
+  398:      0442 75 80 D5       	MOV P0,#0D5H
+  399:      0445 75 90 EB       	MOV P1,#0EBH
+  400:      0448 75 A0 D5       	MOV P2,#0D5H
+  401:      044B 75 B0 EB       	MOV P3,#0EBH
+  402:      044E 12 05 3E       	CALL TEMP
+  403:                          
+  404:      0451 75 80 EB       	MOV P0,#0EBH
+  405:      0454 75 90 D5       	MOV P1,#0D5H
+  406:      0457 75 A0 C1       	MOV P2,#0C1H
+  407:      045A 75 B0 C3       	MOV P3,#0C3H
+  408:      045D 12 05 3E       	CALL TEMP
+  409:                          
+  410:      0460 75 80 C1       	MOV P0,#0C1H
+  411:      0463 75 90 C1       	MOV P1,#0C1H
+  412:      0466 75 A0 EB       	MOV P2,#0EBH
+  413:      0469 75 B0 D7       	MOV P3,#0D7H
+  414:      046C 12 05 3E       	CALL TEMP
+  415:                          
+  416:      046F 75 80 EB       	MOV P0,#0EBH
+  417:      0472 75 90 D5       	MOV P1,#0D5H
+  418:      0475 75 A0 EB       	MOV P2,#0EBH
+  419:      0478 75 B0 D7       	MOV P3,#0D7H
+  420:      047B 12 05 3E       	CALL TEMP
+  421:                          
+  422:      047E 75 80 D5       	MOV P0,#0D5H
+  423:      0481 75 90 EB       	MOV P1,#0EBH
+  424:      0484 75 A0 D5       	MOV P2,#0D5H
+  425:      0487 75 B0 EB       	MOV P3,#0EBH
+  426:      048A 12 05 3E       	CALL TEMP
+  427:                          
+  428:      048D 75 90 E9       	MOV P1,#0E9H
+  429:      0490 75 B0 EB       	MOV P3,#0EBH
+  430:      0493 12 05 3E       	CALL TEMP
+  431:                          
+  432:      0496 75 80 D1       	MOV P0,#0D1H
+  433:      0499 75 A0 D1       	MOV P2,#0D1H
+  434:      049C 12 05 3E       	CALL TEMP
+  435:                          
+
+C51ASM V1.2             Copyright (c) 2009 Atmel Corp.            PAGE 9
+
+
+
+ Line    I  Addr Code           Source
+
+  436:      049F 75 90 E0       	MOV P1,#0E0H
+  437:      04A2 75 A0 D0       	MOV P2,#0D0H
+  438:      04A5 75 B0 E3       	MOV P3,#0E3H
+  439:      04A8 12 05 3E       	CALL TEMP
+  440:                          
+  441:      04AB 75 80 C1       	MOV P0,#0C1H
+  442:      04AE 75 90 E0       	MOV P1,#0E0H
+  443:      04B1 75 A0 C0       	MOV P2,#0C0H
+  444:      04B4 75 B0 E3       	MOV P3,#0E3H
+  445:      04B7 12 05 3E       	CALL TEMP
+  446:                          
+  447:      04BA 75 80 C0       	MOV P0,#0C0H
+  448:      04BD 75 90 C0       	MOV P1,#0C0H
+  449:      04C0 75 A0 C0       	MOV P2,#0C0H
+  450:      04C3 75 B0 C3       	MOV P3,#0C3H
+  451:      04C6 12 05 3E       	CALL TEMP
+  452:                          
+  453:      04C9 75 90 E0       	MOV P1,#0E0H
+  454:      04CC 75 A0 E0       	MOV P2,#0E0H
+  455:      04CF 12 05 3E       	CALL TEMP
+  456:                          
+  457:      04D2 75 80 E0       	MOV P0,#0E0H
+  458:      04D5 75 90 D0       	MOV P1,#0D0H
+  459:      04D8 75 A0 D0       	MOV P2,#0D0H
+  460:      04DB 75 B0 E3       	MOV P3,#0E3H
+  461:      04DE 12 05 3E       	CALL TEMP
+  462:                          
+  463:      04E1 75 80 F0       	MOV P0,#0F0H
+  464:      04E4 75 90 C8       	MOV P1,#0C8H
+  465:      04E7 75 A0 C8       	MOV P2,#0C8H
+  466:      04EA 75 B0 F3       	MOV P3,#0F3H
+  467:      04ED 12 05 3E       	CALL TEMP
+  468:                          
+  469:      04F0 75 80 D8       	MOV P0,#0D8H
+  470:      04F3 75 90 E4       	MOV P1,#0E4H
+  471:      04F6 75 A0 E4       	MOV P2,#0E4H
+  472:      04F9 75 B0 DB       	MOV P3,#0DBH
+  473:      04FC 12 05 3E       	CALL TEMP
+  474:                          	
+  475:      04FF 75 80 CC       	MOV P0,#0CCH
+  476:      0502 75 90 D2       	MOV P1,#0D2H
+  477:      0505 75 A0 D2       	MOV P2,#0D2H
+  478:      0508 75 B0 CF       	MOV P3,#0CFH
+  479:      050B 12 05 3E       	CALL TEMP
+  480:                          
+  481:      050E 75 80 C6       	MOV P0,#0C6H
+  482:      0511 75 90 C9       	MOV P1,#0C9H
+  483:      0514 75 A0 C9       	MOV P2,#0C9H
+  484:      0517 75 B0 C7       	MOV P3,#0C7H
+  485:      051A 12 05 3E       	CALL TEMP
+  486:                          
+  487:      051D 22             	RET
+  488:                          
+  489:      051E 75 80 FF       APRINDE:MOV P0,#0FFH
+  490:      0521 75 90 FF       	MOV P1,#0FFH
+  491:      0524 75 A0 FF       	MOV P2,#0FFH
+
+C51ASM V1.2            Copyright (c) 2009 Atmel Corp.            PAGE 10
+
+
+
+ Line    I  Addr Code           Source
+
+  492:      0527 75 B0 FF       	MOV P3,#0FFH
+  493:      052A 12 05 3E       	CALL TEMP
+  494:      052D 22             	RET
+  495:                          
+  496:      052E 75 80 00       STINGE: MOV P0,#00H
+  497:      0531 75 90 00       	MOV P1,#00H
+  498:      0534 75 A0 00       	MOV P2,#00H
+  499:      0537 75 B0 03       	MOV P3,#03H
+  500:      053A 12 05 3E       	CALL TEMP
+  501:      053D 22             	RET
+  502:                          
+  503:      053E A9 31          TEMP:		MOV  R1,VITEZA
+  504:      0540 7A FF             ETI2:	MOV  R2,#0FFH
+  505:      0542 00                ETI1:	NOP
+  506:      0543 DA FD          		DJNZ R2,ETI1
+  507:      0545 D9 F9          		DJNZ R1,ETI2
+  508:      0547 22             		RET
+  509:                          END
+
+C51ASM V1.2            Copyright (c) 2009 Atmel Corp.            PAGE 11
+
+
+
+
+Segment usage:
+   Code      :   1102 bytes
+   Data      :      0 bytes
+   Idata     :      0 bytes
+   Edata     :      0 bytes
+   Fdata     :      0 bytes
+   Xdata     :      0 bytes
+   Bit       :      0 bits
+
+   Register banks used: ---
+
+   Warnings: 0
+   Errors:   0
+
+
+C51ASM V1.2            Copyright (c) 2009 Atmel Corp.            PAGE 12
+
+
+
+              L I S T   O F   S Y M B O L S
+              =============================
+
+
+SYMBOL                           TYPE     VALUE     LINE
+--------------------------------------------------------
+??C51ASM                         NUMBER   8051
+??CODE_SIZE                      NUMBER   0000
+??DEVICE                         NUMBER   0000
+??ERAM_SIZE                      NUMBER   0000
+??FDATA_SIZE                     NUMBER   0000
+??RAM_SIZE                       NUMBER   0100
+??VERSION                        NUMBER   0120
+??_AT89C2051_                    NUMBER   001B
+??_AT89C4051_                    NUMBER   001C
+??_AT89C51ED2_                   NUMBER   0026
+??_AT89C51IC2_                   NUMBER   0024
+??_AT89C51ID2_                   NUMBER   0025
+??_AT89C51RB2_                   NUMBER   0021
+??_AT89C51RC2_                   NUMBER   0022
+??_AT89C51RC_                    NUMBER   0020
+??_AT89C51RD2_                   NUMBER   0023
+??_AT89C51_                      NUMBER   001D
+??_AT89C52_                      NUMBER   001E
+??_AT89C55WD_                    NUMBER   001F
+??_AT89LP2052_                   NUMBER   0001
+??_AT89LP213_                    NUMBER   0003
+??_AT89LP214_                    NUMBER   0004
+??_AT89LP216_                    NUMBER   0005
+??_AT89LP3240_                   NUMBER   000A
+??_AT89LP4052_                   NUMBER   0002
+??_AT89LP428_                    NUMBER   0006
+??_AT89LP51ED2_                  NUMBER   0011
+??_AT89LP51IC2_                  NUMBER   000E
+??_AT89LP51ID2_                  NUMBER   0010
+??_AT89LP51RB2_                  NUMBER   000C
+??_AT89LP51RC2_                  NUMBER   000D
+??_AT89LP51RD2_                  NUMBER   000F
+??_AT89LP51_                     NUMBER   0007
+??_AT89LP52_                     NUMBER   0008
+??_AT89LP6440_                   NUMBER   000B
+??_AT89LP828_                    NUMBER   0009
+??_AT89LS51_                     NUMBER   0019
+??_AT89LS52_                     NUMBER   001A
+??_AT89S2051_                    NUMBER   0012
+??_AT89S4051_                    NUMBER   0013
+??_AT89S51_                      NUMBER   0014
+??_AT89S52_                      NUMBER   0015
+??_AT89S53_                      NUMBER   0016
+??_AT89S8252_                    NUMBER   0017
+??_AT89S8253_                    NUMBER   0018
+??_DEFAULT_                      NUMBER   0000
+AC                               BIT        D6
+ACC                              DATA       E0
+ADUN                             CODE     01D3       118
+APR1                             CODE     0149        48
+APRI                             CODE     0199        91
+APRINDE                          CODE     051E       489
+B                                DATA       F0
+COMANDA                          DATA       30         7
+CONTI1                           CODE     017E        78
+
+C51ASM V1.2            Copyright (c) 2009 Atmel Corp.            PAGE 13
+
+
+
+SYMBOL                           TYPE     VALUE     LINE
+--------------------------------------------------------
+CONTI2                           CODE     0186        82
+CONTI3                           CODE     018E        86
+CONTI4                           CODE     0196        90
+CONTI5                           CODE     019E        94
+CONTI6                           CODE     01A6        98
+CONTI7                           CODE     01AE       102
+CONTI8                           CODE     01B6       106
+CONTI9                           CODE     01C8       114
+CONTIX1                          CODE     012B        35
+CONTIX2                          CODE     0134        39
+CONTIX3                          CODE     013D        43
+CONTIX4                          CODE     0146        47
+CONTIX5                          CODE     014F        51
+CY                               BIT        D7
+DPH                              DATA       83
+DPL                              DATA       82
+EA                               BIT        AF
+EF1                              CODE     0179        75
+EF2                              CODE     0181        79
+EF3                              CODE     0189        83
+EF4                              CODE     0191        87
+EFE1                             CODE     0125        32
+EFE2                             CODE     012E        36
+EFE3                             CODE     0137        40
+EFE4                             CODE     0140        44
+EFECT1                           CODE     01DE       126
+EFECT2                           CODE     0251       182
+EFECT3                           CODE     0336       283
+EFECT4                           CODE     0433       391
+ES                               BIT        AC
+ET0                              BIT        A9
+ET1                              BIT        AB
+ETI1                             CODE     0542       505
+ETI2                             CODE     0540       504
+EX0                              BIT        A8
+EX1                              BIT        AA
+F0                               BIT        D5
+FAST                             CODE     01B9       107
+IE                               DATA       A8
+IE0                              BIT        89
+IE1                              BIT        8B
+INT0                             BIT        B2
+INT1                             BIT        B3
+IP                               DATA       B8
+IT0                              BIT        88
+IT1                              BIT        8A
+LOOP                             CODE     011D        29
+MAIN                             CODE     0100        12
+OPR                              CODE     01B1       103
+OPRIRE                           BIT        00         9
+OV                               BIT        D2
+P                                BIT        D0
+P0                               DATA       80
+P1                               DATA       90
+P2                               DATA       A0
+P3                               DATA       B0
+PCON                             DATA       87
+PORNIRE                          CODE     01A9        99
+PROGSER                          CODE     0157        56
+
+C51ASM V1.2            Copyright (c) 2009 Atmel Corp.            PAGE 14
+
+
+
+SYMBOL                           TYPE     VALUE     LINE
+--------------------------------------------------------
+PS                               BIT        BC
+PSW                              DATA       D0
+PT0                              BIT        B9
+PT1                              BIT        BB
+PX0                              BIT        B8
+PX1                              BIT        BA
+RB8                              BIT        9A
+RD                               BIT        B7
+RECEPTIE                         CODE     0172        70
+REN                              BIT        9C
+RI                               BIT        98
+RS0                              BIT        D3
+RS1                              BIT        D4
+RXD                              BIT        B0
+SBUF                             DATA       99
+SCAD                             CODE     01C1       110
+SCON                             DATA       98
+SERIAL                           CODE     016D        68
+SF                               CODE     01D7       121
+SF1                              CODE     0155        54
+SLOW                             CODE     01CB       115
+SM0                              BIT        9F
+SM1                              BIT        9E
+SM2                              BIT        9D
+SP                               DATA       81
+STG1                             CODE     0152        52
+STIN                             CODE     01A1        95
+STINGE                           CODE     052E       496
+T0                               BIT        B4
+T1                               BIT        B5
+TB8                              BIT        9B
+TCON                             DATA       88
+TEMP                             CODE     053E       503
+TF0                              BIT        8D
+TF1                              BIT        8F
+TH0                              DATA       8C
+TH1                              DATA       8D
+TI                               BIT        99
+TL0                              DATA       8A
+TL1                              DATA       8B
+TMOD                             DATA       89
+TR0                              BIT        8C
+TR1                              BIT        8E
+TXD                              BIT        B1
+VITEZA                           DATA       31         8
+WR                               BIT        B6

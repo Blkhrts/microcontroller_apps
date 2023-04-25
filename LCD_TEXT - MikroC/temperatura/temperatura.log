@@ -1,0 +1,16 @@
+Line	MessageNo	File Name
+0	1	mikroc8051.exe -MSF -DBG -pAT89S8253 -ES -DL -O11111114 -fo10 -N"C:\Users\User\Desktop\IMED\MPMC\proiect\LCD_TEXT - MikroC\temperatura\temperatura.mcp51" -SP"C:\Program Files (x86)\Mikroelektronika\mikroC PRO for 8051\defs\" -SP"C:\Users\User\Desktop\IMED\MPMC\proiect\LCD_TEXT - MikroC\temperatura\" -SP"C:\Users\User\Desktop\IMED\MPMC\proiect\limbaj mikroC\LCD-uri\LCD text\temperatura\" -SP"C:\Program Files (x86)\Mikroelektronika\mikroC PRO for 8051\Uses\ATMEL\" "temperatura.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_EEPROM_rwb.mcl" "__Lib_SPI_SPCR.mcl" "__Lib_UART_Timer1.mcl" "__Lib_CType.mcl" "__Lib_CString.mcl" "__Lib_CStdlib.mcl" "__Lib_CMath.mcl" "__Lib_Conversions.mcl" "__Lib_Sprintf.mcl" "__Lib_PrintOut.mcl" "__Lib_Sprinti.mcl" "__Lib_Sprintl.mcl" "__Lib_Time.mcl" "__Lib_Trigonometry.mcl" "__Lib_Button.mcl" "__Lib_Keypad4x4.mcl" "__Lib_Manchester.mcl" "__Lib_OneWire.mcl" "__Lib_PS2.mcl" "__Lib_Sound.mcl" "__Lib_SoftI2C.mcl" "__Lib_SoftSPI.mcl" "__Lib_SoftUART.mcl" "__Lib_PortExpander.mcl" "__Lib_CANSPI.mcl" "__Lib_GlcdFonts.mcl" "__Lib_Glcd.mcl" "__Lib_LcdConsts.mcl" "__Lib_Lcd.mcl" "__Lib_RS485.mcl" "__Lib_T6963C.mcl" "__Lib_SPIGlcd.mcl" "__Lib_SPILcd.mcl" "__Lib_SPILcd8.mcl" "__Lib_SPIT6963C.mcl" "__Lib_EthEnc28j60.mcl"	 
+warning: 0	1501	Specified search path does not exist: 'C:\Users\User\Desktop\IMED\MPMC\proiect\limbaj mikroC\LCD-uri\LCD text\temperatura'	 
+diagnostics: 0	125	All files Preprocessed in 125 ms	 
+diagnostics: 0	121	Compilation Started	temperatura.c
+warning: 47	1509	Generated baud rate is 4735 bps (error = 1.36 percent)	temperatura.c
+diagnostics: 206	122	Compiled Successfully	temperatura.c
+diagnostics: 0	126	All files Compiled in 516 ms	 
+hint: 0	1141	Used BDATA RAM (bytes): 14 (88%) Free BDATA RAM (bytes): 2 (12%)	Used BDATA RAM (bytes): 14 (88%) Free BDATA RAM (bytes): 2 (12%)
+hint: 0	1141	Used DATA RAM (bytes): 59 (57%) Free DATA RAM (bytes): 45 (43%)	Used DATA RAM (bytes): 59 (57%) Free DATA RAM (bytes): 45 (43%)
+hint: 0	1141	Used IDATA RAM (bytes): 0 (1%) Free IDATA RAM (bytes): 128 (99%)	Used IDATA RAM (bytes): 0 (1%) Free IDATA RAM (bytes): 128 (99%)
+hint: 0	1141	Used ROM (bytes): 2118 (17%)  Free ROM (bytes): 10170 (83%)	Used ROM (bytes): 2118 (17%)  Free ROM (bytes): 10170 (83%)
+diagnostics: 0	124	Project Linked Successfully	temperatura.mcp51
+diagnostics: 0	127	Linked in 2359 ms	 
+diagnostics: 0	128	Project 'temperatura.mcp51' completed: 5187 ms	 
+diagnostics: 0	103	Finished successfully: 13 ian. 2022, 09:01:19	temperatura.mcp51
